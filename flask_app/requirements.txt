@@ -2,3 +2,4 @@ flask
 Flask-HTTPAuth
 Werkzeug
 python-dotenv==1.0.1
+gunicorn
