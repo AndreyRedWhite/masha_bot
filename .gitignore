@@ -4,3 +4,4 @@ bot/.env
 *pycache*
 temp
 temp*
+.DS_Store

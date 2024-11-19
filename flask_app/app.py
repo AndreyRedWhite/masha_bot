@@ -1,66 +1,58 @@
+from flask import Flask, render_template, request, redirect, flash, url_for
+import json
 import os
-import boto3
-from flask import Flask, render_template, request, redirect, url_for, flash
-from dotenv import load_dotenv
-from botocore.client import Config
-
-# Загрузка переменных окружения
-load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.getenv("FLASK_SECRET_KEY", "supersecretkey")
+app.secret_key = "ePN94p!o"  # Смените на более сложный ключ
 
-# Настройка MinIO
-s3 = boto3.client(
-    's3',
-    endpoint_url=os.getenv("MINIO_ENDPOINT"),
-    aws_access_key_id=os.getenv("MINIO_ACCESS_KEY"),
-    aws_secret_access_key=os.getenv("MINIO_SECRET_KEY"),
-    config=Config(signature_version='s3v4')
-)
-bucket_name = os.getenv("MINIO_BUCKET_NAME")
-
-# Хранилище для кнопок (временный вариант, можно заменить на базу данных)
-buttons = []
+DATA_FILE = os.getenv("DATA_FILE", "/app/shared_data/data.json")
 
 
-@app.route('/')
+def load_data():
+    """Загрузка данных из data.json"""
+    if os.path.exists(DATA_FILE):
+        with open(DATA_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {}
+
+
+def save_data(data):
+    """Сохранение данных в data.json"""
+    with open(DATA_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
+
+@app.route("/")
 def index():
-    """Главная страница управления"""
-    return render_template("index.html", buttons=buttons)
+    """Главная страница"""
+    data = load_data()
+    return render_template("index.html", data=data)
 
 
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    """Загрузка архива в MinIO и добавление кнопки в боте"""
-    file = request.files['file']
-    button_text = request.form['button_text']
-
-    if file and button_text:
-        # Загрузка файла в MinIO
-        file_key = file.filename
-        s3.upload_fileobj(file, bucket_name, file_key)
-
-        # Добавление кнопки
-        buttons.append({"text": button_text, "file_key": file_key})
-
-        flash("Файл успешно загружен и кнопка добавлена!")
-    else:
-        flash("Ошибка: необходимо выбрать файл и задать текст кнопки.")
-
-    return redirect(url_for('index'))
+@app.route("/add_item/<category>", methods=["POST"])
+def add_item(category):
+    """Добавление элемента в категорию"""
+    data = load_data()
+    item = request.form.get("item")
+    if category in data and item:
+        data[category].append(item)
+        save_data(data)
+        flash(f"Добавлено: {item} в категорию {category}.")
+    return redirect(url_for("index"))
 
 
-@app.route('/delete_button/<int:button_index>', methods=['POST'])
-def delete_button(button_index):
-    """Удаление кнопки"""
+@app.route("/delete_item/<category>/<int:index>", methods=["POST"])
+def delete_item(category, index):
+    """Удаление элемента из категории"""
+    data = load_data()
     try:
-        button = buttons.pop(button_index)
-        flash(f"Кнопка '{button['text']}' удалена.")
-    except IndexError:
-        flash("Ошибка: кнопка не найдена.")
-    return redirect(url_for('index'))
+        removed_item = data[category].pop(index)
+        save_data(data)
+        flash(f"Удалено: {removed_item} из категории {category}.")
+    except (IndexError, KeyError):
+        flash("Ошибка при удалении.")
+    return redirect(url_for("index"))
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000)
+    app.run(host="0.0.0.0", port=5000)

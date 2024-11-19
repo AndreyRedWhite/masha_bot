@@ -1,10 +1,13 @@
 import json
 import random
+import os
 
 def generate_prompt():
     """Генерация случайного промта."""
 
-    with open('data.json') as f:
+    DATA_FILE = os.getenv("DATA_FILE", "/app/shared_data/data.json")
+
+    with open(DATA_FILE) as f:
         data = json.load(f)
     pers = random.choice(data['персонаж'])
     mat = random.choice(data['материал'])

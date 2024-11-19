@@ -3,41 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Управление ботом Маши</title>
+    <title>Управление data.json</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <h1>Управление ботом Маши</h1>
+    <h1>Управление data.json</h1>
 
     {% with messages = get_flashed_messages() %}
     {% if messages %}
-        <ul>
+        <ul class="flash-messages">
             {% for message in messages %}
-                <li class="flash-message">{{ message }}</li>
+                <li>{{ message }}</li>
             {% endfor %}
         </ul>
     {% endif %}
     {% endwith %}
 
-    <h2>Добавить новую кнопку и загрузить файл</h2>
-    <form action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data">
-        <label for="file">Выберите файл:</label>
-        <input type="file" name="file" required><br><br>
-        <label for="button_text">Текст кнопки:</label>
-        <input type="text" name="button_text" required><br><br>
-        <button type="submit">Загрузить и добавить кнопку</button>
-    </form>
-
-    <h2>Список кнопок</h2>
-    <ul>
-        {% for button in buttons %}
-            <li>
-                {{ button.text }}
-                <form action="{{ url_for('delete_button', button_index=loop.index0) }}" method="POST" style="display:inline;">
-                    <button type="submit">Удалить</button>
+    <div class="categories-container">
+        {% for category, items in data.items() %}
+            <div class="category">
+                <h2>{{ category }}</h2>
+                <div class="items">
+                    <ul>
+                        {% for item in items %}
+                            <li>
+                                {{ item }}
+                                <form action="{{ url_for('delete_item', category=category, index=loop.index0) }}" method="POST" style="display:inline;">
+                                    <button type="submit">Удалить</button>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <form action="{{ url_for('add_item', category=category) }}" method="POST" class="add-item-form">
+                    <input type="text" name="item" placeholder="Добавить элемент" required>
+                    <button type="submit" id="btn_add">Добавить</button>
                 </form>
-            </li>
+            </div>
         {% endfor %}
-    </ul>
+    </div>
 </body>
 </html>

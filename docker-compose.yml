@@ -1,29 +1,40 @@
 version: '3.8'
 
 services:
-  minio:
-    image: quay.io/minio/minio
-    container_name: minio
-    env_file:
-      - bot/.env
-    environment:
-      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
-      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
-    volumes:
-      - minio_data:/data
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
     ports:
-      - "9000:9000"
-      - "9001:9001"
-    command: server /data --console-address ":9001"
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/ssl/private:/etc/ssl/private:ro    # Подключение приватного ключа
+      - /etc/ssl/certs:/etc/ssl/certs:ro        # Подключение сертификата
+    depends_on:
+      - flask_app
+      - bot
+
+  flask_app:
+    build:
+      context: ./flask_app
+    volumes:
+      - ./shared_data:/app/shared_data          # Общий volume для данных
+    environment:
+      - DATA_FILE=/app/shared_data/data.json
+    expose:
+      - "5000"                                  # Приложение будет доступно только через Nginx
 
   bot:
     build:
       context: .
-    container_name: telegram_bot
-    env_file:
-      - bot/.env
-    depends_on:
-      - minio
+      dockerfile: Dockerfile
+    volumes:
+      - ./shared_data:/app/shared_data          # Общий volume для данных
+    environment:
+      - DATA_FILE=/app/shared_data/data.json
+    expose:
+      - "5000"                                  # Бот будет доступен только через Nginx
 
 volumes:
-  minio_data:
+  shared_data:
