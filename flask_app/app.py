@@ -1,9 +1,33 @@
-from flask import Flask, render_template, request, redirect, flash, url_for
+from flask import Flask, render_template, request, redirect, flash, url_for, jsonify
+from flask_httpauth import HTTPBasicAuth
+from werkzeug.security import generate_password_hash, check_password_hash
 import json
 import os
+from dotenv import load_dotenv
+
+
+# Загрузка переменных из .env
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = "ePN94p!o"  # Смените на более сложный ключ
+app.secret_key = os.getenv("FLASK_SECRET_KEY", "supersecretkey")
+
+# HTTP Basic Auth
+auth = HTTPBasicAuth()
+
+# Логин и пароль из переменных окружения
+users = {
+    os.getenv("FLASK_USERNAME", "admin"): generate_password_hash(
+        os.getenv("FLASK_PASSWORD", "default_password")
+    )
+}
+
+@auth.verify_password
+def verify_password(username, password):
+    """Проверка логина и пароля"""
+    if username in users and check_password_hash(users.get(username), password):
+        return username
+
 
 DATA_FILE = os.getenv("DATA_FILE", "/app/shared_data/data.json")
 
