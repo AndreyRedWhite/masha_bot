@@ -2,3 +2,5 @@ bot/.env
 .env
 .idea
 *pycache*
+temp
+temp*
