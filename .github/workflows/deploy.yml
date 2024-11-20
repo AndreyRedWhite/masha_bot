@@ -21,6 +21,9 @@ jobs:
         private-key: ${{ secrets.SSH_PRIVATE_KEY }}
         source: "./"
         target: "/mnt/volume1/scripts/masha_bot"
+        port: 22
+        args: "-o StrictHostKeyChecking=no"
+
 
     - name: Restart Docker containers
       uses: appleboy/ssh-action@v0.1.0  # Выполнение команд на сервере через SSH
