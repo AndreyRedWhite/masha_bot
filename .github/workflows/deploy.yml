@@ -27,6 +27,6 @@ jobs:
         script: |
           cd /mnt/volume1/scripts/masha_bot
           git pull origin main
-          docker-compose down
-          docker-compose up --build -d
+          docker compose down
+          docker compose up --build -d
         debug: true
