@@ -22,7 +22,7 @@
     <div class="categories-container">
         {% for category, items in data.items() %}
             <div class="category">
-                <h2>{{ category }}</h2>
+                <h2>{{ category }} {{ counters[category] }}шт.</h2>
                 <div class="items">
                     <ul>
                         {% for item in items %}
