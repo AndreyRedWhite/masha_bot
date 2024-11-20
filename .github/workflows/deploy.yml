@@ -13,24 +13,28 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3  # Клонирование репозитория
 
+    - name: Disable host key checking
+      run: |
+        mkdir -p ~/.ssh
+        echo -e "Host *\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null\n" > ~/.ssh/config
+        chmod 600 ~/.ssh/config
+
     - name: Copy files to server
       uses: appleboy/scp-action@v0.1.0  # Копирование файлов на сервер через SCP
       with:
         host: ${{ secrets.SERVER_HOST }}
         username: ${{ secrets.SERVER_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        private-key: ${{ secrets.SSH_PRIVATE_KEY }}
         source: "./"
         target: "/mnt/volume1/scripts/masha_bot"
         port: 22
-        args: "-o StrictHostKeyChecking=no"
-
 
     - name: Restart Docker containers
       uses: appleboy/ssh-action@v0.1.0  # Выполнение команд на сервере через SSH
       with:
         host: ${{ secrets.SERVER_HOST }}
         username: ${{ secrets.SERVER_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        private-key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd /mnt/volume1/scripts/masha_bot
           docker-compose down
