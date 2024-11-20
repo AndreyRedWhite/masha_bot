@@ -30,7 +30,7 @@ jobs:
         port: 22
 
     - name: Restart Docker containers
-      uses: appleboy/ssh-action@v0.1.0  # Выполнение команд на сервере через SSH
+      uses: appleboy/ssh-action@v0.1.0  # Выполнение команд на сервере
       with:
         host: ${{ secrets.SERVER_HOST }}
         username: ${{ secrets.SERVER_USER }}
