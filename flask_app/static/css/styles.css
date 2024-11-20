@@ -1,124 +1,76 @@
-/* Основные стили */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
-    background-color: #f4f6f9;
-    color: #333;
+    background-color: #f5f5f5;
 }
 
 h1 {
     text-align: center;
-    color: #3a8fd1;
-    font-size: 2rem;
+    color: #4CAF50;
+}
+
+.counters {
     margin-bottom: 20px;
-}
-
-h2 {
-    font-size: 1.5rem;
-    color: #4a90e2;
     text-align: center;
-    margin-bottom: 10px;
+    font-size: 18px;
 }
 
-/* Сообщения */
-.flash-messages {
-    list-style-type: none;
-    padding: 0;
-    margin-bottom: 20px;
-}
-
-.flash-messages li {
-    background-color: #dff0d8;
-    color: #3c763d;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    text-align: center;
-    font-weight: bold;
-}
-
-/* Контейнер категорий */
-.categories-container {
+.categories {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 столбца */
+    grid-template-columns: repeat(4, 1fr);
     gap: 20px;
+    padding: 20px;
 }
 
 .category {
-    background-color: #ffffff;
-    border: 1px solid #ddd;
+    background: white;
     border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     padding: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.items {
-    max-height: 300px; /* Прокрутка для списков */
-    overflow-y: auto;
+.category h2 {
+    color: #4CAF50;
+    font-size: 20px;
     margin-bottom: 10px;
-    padding-right: 5px;
 }
 
-.items ul {
+.category ul {
     list-style-type: none;
     padding: 0;
     margin: 0;
 }
 
-.items li {
+.category li {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
-    padding: 8px;
-    background-color: #f9f9f9;
-    border-radius: 5px;
-    border: 1px solid #ddd;
+    padding: 5px 0;
 }
 
-.items li:hover {
-    background-color: #eef5ff;
-}
-
-/* Кнопки */
 button {
-    background-color: #4a90e2;
+    background: #4CAF50;
     color: white;
     border: none;
+    border-radius: 4px;
     padding: 5px 10px;
-    border-radius: 3px;
     cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.3s;
 }
 
 button:hover {
-    background-color: #3a8fd1;
+    background: #45a049;
 }
 
-button:active {
-    background-color: #317bb4;
+input {
+    padding: 5px;
+    width: 70%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }
 
-button#btn_add {
-background-color: red;
-}
-/* Форма добавления */
-.add-item-form {
+form {
     display: flex;
     gap: 10px;
     margin-top: 10px;
-}
-
-.add-item-form input[type="text"] {
-    flex-grow: 1;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 0.9rem;
-}
-
-.add-item-form button {
-    padding: 8px 12px;
 }
