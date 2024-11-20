@@ -3,24 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Управление ключами для промпта</title>
+    <title>Управление data.json</title>
     <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
-    <h1>Управление ключами для промпта</h1>
+    <h1>Управление data.json</h1>
 
-    <!-- Блок для отображения количества элементов в каждой категории -->
-    <div class="counters">
-        {% for category, count in counters.items() %}
-            <p><strong>{{ category }}</strong>: {{ count }} ключей</p>
-        {% endfor %}
-    </div>
-
-    <!-- Отображение категорий и элементов -->
+    <!-- Категории с элементами -->
     <div class="categories">
         {% for category, items in data.items() %}
             <div class="category">
-                <h2>{{ category }}</h2>
+                <h2>{{ category }} <span class="counter">({{ items | length }})</span></h2>
                 <ul>
                     {% for item in items %}
                         <li>
@@ -37,7 +30,6 @@
         {% endfor %}
     </div>
 
-    <!-- Скрипт для управления элементами -->
     <script>
         async function deleteItem(category, item) {
             const response = await fetch(`/delete`, {
@@ -55,8 +47,9 @@
         async function addItem(event, category) {
             event.preventDefault();
             const input = document.getElementById(`add-${category}`);
-            const newItem = input.value;
-            if (newItem.trim() === "") return;
+            const newItem = input.value.trim();
+            if (!newItem) return;
+
             const response = await fetch(`/add`, {
                 method: 'POST',
                 headers: {
