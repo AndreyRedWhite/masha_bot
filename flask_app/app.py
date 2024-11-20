@@ -22,6 +22,7 @@ users = {
     )
 }
 
+
 @auth.verify_password
 def verify_password(username, password):
     """Проверка логина и пароля"""
@@ -31,6 +32,7 @@ def verify_password(username, password):
 # Путь к файлу данных
 DATA_FILE = os.getenv("DATA_FILE", "/app/shared_data/data.json")
 
+
 def load_data():
     """Загрузка данных из файла"""
     if os.path.exists(DATA_FILE):
@@ -38,10 +40,12 @@ def load_data():
             return json.load(f)
     return {}
 
+
 def save_data(data):
     """Сохранение данных в файл"""
     with open(DATA_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
+
 
 @app.route('/')
 @auth.login_required
@@ -49,6 +53,7 @@ def index():
     """Главная страница"""
     data = load_data()
     return render_template("index.html", data=data)
+
 
 @app.route('/add_item/<category>', methods=['POST'])
 @auth.login_required
@@ -63,6 +68,7 @@ def add_item(category):
     else:
         flash("Ошибка: категория не найдена или элемент пустой.")
     return redirect(url_for("index"))
+
 
 @app.route('/delete_item/<category>/<int:index>', methods=['POST'])
 @auth.login_required
