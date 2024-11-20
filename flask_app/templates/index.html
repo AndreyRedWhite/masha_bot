@@ -1,44 +1,27 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Управление data.json</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
     <h1>Управление data.json</h1>
-
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <ul class="flash-messages">
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    {% endwith %}
-
-    <div class="categories-container">
+    <div class="counters">
+        {% for category, count in counters.items() %}
+            <p><strong>{{ category }}</strong>: {{ count }} элементов</p>
+        {% endfor %}
+    </div>
+    <div class="categories">
         {% for category, items in data.items() %}
             <div class="category">
                 <h2>{{ category }}</h2>
-                <div class="items">
-                    <ul>
-                        {% for item in items %}
-                            <li>
-                                {{ item }}
-                                <form action="{{ url_for('delete_item', category=category, index=loop.index0) }}" method="POST" style="display:inline;">
-                                    <button type="submit">Удалить</button>
-                                </form>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <form action="{{ url_for('add_item', category=category) }}" method="POST" class="add-item-form">
-                    <input type="text" name="item" placeholder="Добавить элемент" required>
-                    <button type="submit" id="btn_add">Добавить</button>
-                </form>
+                <ul>
+                    {% for item in items %}
+                        <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
             </div>
         {% endfor %}
     </div>

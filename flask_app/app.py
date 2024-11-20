@@ -53,7 +53,8 @@ def save_data(data):
 def index():
     """Главная страница"""
     data = load_data()
-    return render_template("index.html", data=data)
+    counters = {category: len(items) for category, items in data.items()}  # Подсчёт элементов в каждой категории
+    return render_template("index.html", data=data, counters=counters)
 
 
 @app.route('/add_item/<category>', methods=['POST'])
@@ -83,6 +84,7 @@ def delete_item(category, index):
     except (IndexError, KeyError):
         flash("Ошибка при удалении.")
     return redirect(url_for("index"))
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
