@@ -13,11 +13,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3  # Клонирование репозитория
 
-    - name: Disable host key checking
+    - name: Add server to known hosts
       run: |
         mkdir -p ~/.ssh
-        echo -e "Host *\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null\n" > ~/.ssh/config
-        chmod 600 ~/.ssh/config
+        ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+        chmod 600 ~/.ssh/known_hosts
 
     - name: Copy files to server
       uses: appleboy/scp-action@v0.1.0  # Копирование файлов на сервер через SCP
