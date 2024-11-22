@@ -31,7 +31,7 @@ async def send_welcome(message: Message):
 
     # Приветственное сообщение
     welcome_text = (
-        f"Привет,<b>{first_name} {last_name}</b>! 👋\n\n"
+        f"Привет, <b>{first_name} {last_name}</b>! 👋\n\n"
         "Этот бот создан, чтобы помочь тебе развивать воображение и учиться создавать креативные работы в MidJourney.\n\n"
         "🎯 <b>Что я умею?</b>\n"
         "Я генерирую задания, которые станут основой для ярких и точных промптов. Нажми кнопку, и я выберу:\n\n"
@@ -47,18 +47,28 @@ async def send_welcome(message: Message):
     # Отправка приветствия
     await message.answer(welcome_text, reply_markup=keyboard, parse_mode=ParseMode.HTML)
 
-# Обработчик нажатия кнопки "Дай задание!"
-@dp.callback_query(F.data == "generate_prompt")
+# Обработчик нажатия кнопки "Дай задание!" или "Ещё"
+@dp.callback_query(F.data.in_({"generate_prompt", "more_prompt"}))
 async def process_generate_prompt(callback: CallbackQuery):
     # Генерация случайного промта
     pers, mat, place, style = generate_prompt()
-    # Отправка промта пользователю
-    await callback.message.answer(f"Вот твое задание:\n"
-                                  f"<b>Персонаж/предмет:</b> {pers}\n"
-                                  f"<b>Материал:</b> {mat}\n"
-                                  f"<b>Место:</b> {place}\n"
-                                  f"<b>Стиль:</b> {style}", parse_mode=ParseMode.HTML)
-    # Подтверждение нажатия
+
+    # Создание кнопки "Ещё"
+    keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[[InlineKeyboardButton(text="Ещё", callback_data="more_prompt")]]
+    )
+
+    # Отправка промта с кнопкой
+    await callback.message.answer(
+        f"Вот твое задание:\n"
+        f"<b>Персонаж/предмет:</b> {pers}\n"
+        f"<b>Материал:</b> {mat}\n"
+        f"<b>Место:</b> {place}\n"
+        f"<b>Стиль:</b> {style}",
+        reply_markup=keyboard,
+        parse_mode=ParseMode.HTML
+    )
+    # Подтверждение нажатия кнопки
     await callback.answer()
 
 # Запуск бота
