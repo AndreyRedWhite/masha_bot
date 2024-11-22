@@ -9,7 +9,7 @@ def generate_prompt():
 
     with open(DATA_FILE) as f:
         data = json.load(f)
-    pers = random.choice(data['персонаж'])
+    pers = random.choice(data['персонаж/предмет'])
     mat = random.choice(data['материал'])
     place = random.choice(data['место'])
     style = random.choice(data['стили'])

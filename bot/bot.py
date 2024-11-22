@@ -54,7 +54,7 @@ async def process_generate_prompt(callback: CallbackQuery):
     pers, mat, place, style = generate_prompt()
     # Отправка промта пользователю
     await callback.message.answer(f"Вот твое задание:\n"
-                                  f"<b>Персонаж:</b> {pers}\n"
+                                  f"<b>Персонаж/предмет:</b> {pers}\n"
                                   f"<b>Материал:</b> {mat}\n"
                                   f"<b>Место:</b> {place}\n"
                                   f"<b>Стиль:</b> {style}", parse_mode=ParseMode.HTML)
